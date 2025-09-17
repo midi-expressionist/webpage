@@ -167,8 +167,8 @@
         }
 
         .support-icon img {
-            width: 80%;
-            height: 80%;
+            width: 50%;
+            height: 50%;
             object-fit: contain;
         }
 
@@ -317,6 +317,35 @@
             box-shadow: 0 30px 80px rgba(255, 255, 255, 0.3);
         }
 
+        /* Floating Home Button for Mobile */
+        .floating-home-btn {
+            display: none;
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 50%;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            z-index: 1500;
+            transition: all 0.3s ease;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #000000;
+            font-size: 1.5rem;
+        }
+
+        .floating-home-btn:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+        }
+
         /* PDF Modal Styles */
         .pdf-modal {
             display: none;
@@ -438,6 +467,10 @@
 
             .back-link {
                 display: none;
+            }
+
+            .floating-home-btn {
+                display: flex;
             }
 
             .faq-question {
@@ -574,6 +607,11 @@
             </div>
         </div>
     </main>
+
+    <!-- Floating Home Button (Mobile Only) -->
+    <a href="index.html" class="floating-home-btn" title="Back to Home">
+        🏠
+    </a>
 
     <!-- PDF Modal -->
     <div id="pdfModal" class="pdf-modal">
