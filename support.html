@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support - MIDI Expressionist</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.95);
+            background: #000000;
+            overflow-x: hidden;
+        }
+
+        .background-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 30% 70%, rgba(120, 119, 198, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 70% 30%, rgba(255, 119, 198, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(120, 219, 255, 0.08) 0%, transparent 50%),
+                linear-gradient(135deg, #000000 0%, #0a0a0a 100%);
+            animation: backgroundShift 25s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+        }
+
+        .back-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.8rem 1.5rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(255, 255, 255, 0.1);
+        }
+
+        .main {
+            padding: 10rem 0 4rem 0;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .support-hero {
+            text-align: center;
+            margin-bottom: 6rem;
+            position: relative;
+        }
+
+        .support-hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 20%, #ff6b6b 40%, #4ecdc4 60%, #45b7d1 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.3));
+        }
+
+        .support-hero p {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 6rem;
+        }
+
+        .support-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            padding: 3rem 2.5rem;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .support-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-10px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.3);
+        }
+
+        .support-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(78, 205, 196, 0.2));
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .support-icon img {
+            width: 80%;
+            height: 80%;
+            object-fit: contain;
+        }
+
+        .support-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .support-card p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .support-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: inherit;
+        }
+
+        .support-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+        }
+
+        .faq-section {
+            margin-bottom: 6rem;
+        }
+
+        .faq-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, #ffffff 30%, #4ecdc4 70%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .faq-item {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(30px) saturate(150%);
+            -webkit-backdrop-filter: blur(30px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .faq-question {
+            padding: 2rem 2.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .faq-answer {
+            padding: 0 2.5rem 2rem 2.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.7;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .faq-plus {
+            font-size: 1.5rem;
+            color: rgba(255, 107, 107, 0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .contact-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 4rem 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-section h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-section p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2.5rem;
+        }
+
+        .contact-email {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.2rem 2.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            color: #000000;
+            text-decoration: none;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.4s ease;
+            box-shadow: 0 20px 60px rgba(255, 255, 255, 0.2);
+        }
+
+        .contact-email:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-3px);
+            box-shadow: 0 30px 80px rgba(255, 255, 255, 0.3);
+        }
+
+        /* PDF Modal Styles */
+        .pdf-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .pdf-modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border-radius: 20px;
+            width: 90%;
+            height: 90%;
+            max-width: 1200px;
+            max-height: 800px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .pdf-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .pdf-modal-header h3 {
+            margin: 0;
+            color: #000000;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .pdf-close-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            font-weight: 300;
+            color: #666;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .pdf-close-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+            color: #000;
+            transform: rotate(90deg);
+        }
+
+        .pdf-container {
+            flex: 1;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .pdf-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        @media (max-width: 768px) {
+            .support-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .support-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .support-card {
+                padding: 2.5rem 2rem;
+            }
+
+            .contact-section {
+                padding: 3rem 2rem;
+            }
+
+            .back-link {
+                display: none;
+            }
+
+            .faq-question {
+                padding: 1.5rem 2rem;
+            }
+
+            .faq-answer {
+                padding: 0 2rem 1.5rem 2rem;
+            }
+
+            .pdf-modal-content {
+                width: 95%;
+                height: 95%;
+                border-radius: 16px;
+            }
+
+            .pdf-modal-header {
+                padding: 1rem 1.5rem;
+            }
+
+            .pdf-modal-header h3 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-gradient"></div>
+    
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo">MIDI Expressionist</a>
+            <a href="index.html" class="back-link">Back to Home</a>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="support-hero">
+                <h1>Support & Help</h1>
+                <p>Get the most out of MIDI Expressionist with our comprehensive support resources</p>
+            </div>
+
+            <div class="support-grid">
+                <div class="support-card">
+                    <div class="support-icon">
+                        <img src="./manual.png" alt="User Manual">
+                    </div>
+                    <h3>User Manual</h3>
+                    <p>Complete documentation covering all features, setup instructions, and advanced techniques for MIDI Expressionist.</p>
+                    <a href="./manual.pdf" class="support-btn" target="_blank">Download Manual</a>
+                </div>
+
+                <div class="support-card">
+                    <div class="support-icon">
+                        <img src="./antena.png" alt="Quick Setup">
+                    </div>
+                    <h3>Quick Setup Guide</h3>
+                    <p>Get up and running in minutes with our step-by-step connection guide for USB and Wi-Fi setup.</p>
+                    <button onclick="openPdfModal()" class="support-btn">View Guide</button>
+                </div>
+
+                <div class="support-card">
+                    <div class="support-icon">
+                        <img src="./mail_icon.png" alt="Email Support">
+                    </div>
+                    <h3>Email Support</h3>
+                    <p>Technical questions, bug reports, or feature requests? Our support team is here to help.</p>
+                    <a href="mailto:midiexpressionist@gmail.com" class="support-btn">Contact Support</a>
+                </div>
+
+                <div class="support-card">
+                    <div class="support-icon">
+                        <img src="./llave.png" alt="Troubleshooting">
+                    </div>
+                    <h3>Troubleshooting</h3>
+                    <p>Common issues and solutions to get your MIDI setup working perfectly with your DAW.</p>
+                    <a href="#faq" class="support-btn">View FAQ</a>
+                </div>
+            </div>
+
+            <div class="faq-section" id="faq">
+                <h2 class="faq-title">Frequently Asked Questions</h2>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How do I connect MIDI Expressionist to my Mac?</span>
+                        <span class="faq-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        You can connect via USB (IDAM) for zero-latency or Wi-Fi for wireless control. USB requires enabling your iOS device in Audio MIDI Setup. Wi-Fi requires both devices on the same network and creating a network session in MIDI Network Setup.
+                        <br><br>
+                        For detailed step-by-step instructions, check our <a href="javascript:void(0);" onclick="openPdfModal()" style="color: #4ecdc4; text-decoration: underline; cursor: pointer;">Quick Setup Guide</a>.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Which DAWs are supported?</span>
+                        <span class="faq-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        MIDI Expressionist works with any MIDI-compatible DAW including Logic Pro, Pro Tools, Cubase, Ableton Live, Studio One, Reaper, and more. It sends standard MIDI Control Change messages.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What iOS versions are supported?</span>
+                        <span class="faq-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        MIDI Expressionist requires iOS 12 or later and works on both iPhone and iPad with automatic orientation support.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How do I create custom controller layouts?</span>
+                        <span class="faq-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Use the Edit Settings Mode to add, remove, and customize controllers. You can adjust sizes, positions, MIDI parameters, and save unlimited presets for different projects.
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-section">
+                <h2>Still Need Help?</h2>
+                <p>Can't find what you're looking for? Our support team is ready to assist you with any questions about MIDI Expressionist.</p>
+                <a href="mailto:midiexpressionist@gmail.com" class="contact-email">
+                    Contact Support
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- PDF Modal -->
+    <div id="pdfModal" class="pdf-modal">
+        <div class="pdf-modal-content">
+            <div class="pdf-modal-header">
+                <h3>Quick Setup Guide</h3>
+                <button onclick="closePdfModal()" class="pdf-close-btn">&times;</button>
+            </div>
+            <div class="pdf-container">
+                <iframe id="pdfFrame" src="" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openPdfModal() {
+            const modal = document.getElementById('pdfModal');
+            const iframe = document.getElementById('pdfFrame');
+            iframe.src = './MIDI Expressionist Quick Setup Guide.pdf';
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePdfModal() {
+            const modal = document.getElementById('pdfModal');
+            const iframe = document.getElementById('pdfFrame');
+            iframe.src = '';
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Cerrar modal al hacer clic fuera del contenido
+        document.getElementById('pdfModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePdfModal();
+            }
+        });
+
+        // Cerrar modal con la tecla Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePdfModal();
+            }
+        });
+    </script>
+</body>
+</html>

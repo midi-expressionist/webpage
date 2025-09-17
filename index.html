@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIDI Expressionist - Professional MIDI Control for iOS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.95);
+            background: #000000;
+            overflow-x: hidden;
+        }
+
+        .background-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%),
+                linear-gradient(135deg, #000000 0%, #0a0a0a 100%);
+            animation: backgroundShift 20s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.8rem 1.5rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(255, 255, 255, 0.1);
+        }
+
+        .hero {
+            padding: 10rem 0 8rem 0;
+            position: relative;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                conic-gradient(from 0deg at 50% 50%, 
+                rgba(255, 107, 107, 0.1) 0deg, 
+                rgba(78, 205, 196, 0.1) 90deg, 
+                rgba(69, 183, 209, 0.1) 180deg, 
+                rgba(255, 107, 107, 0.1) 360deg);
+            animation: rotate 30s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .app-showcase {
+            margin: 3rem auto 4rem auto;
+            perspective: 1000px;
+        }
+
+        .app-icon {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto;
+            position: relative;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border-radius: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 30px 80px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            animation: liquidFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes liquidFloat {
+            0%, 100% { 
+                transform: translateY(0px) rotateY(0deg); 
+                filter: drop-shadow(0 20px 40px rgba(255, 255, 255, 0.1));
+            }
+            25% { 
+                transform: translateY(-15px) rotateY(5deg); 
+                filter: drop-shadow(0 30px 60px rgba(255, 255, 255, 0.15));
+            }
+            75% { 
+                transform: translateY(-8px) rotateY(-3deg); 
+                filter: drop-shadow(0 25px 50px rgba(255, 255, 255, 0.12));
+            }
+        }
+
+        .app-icon::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url('./icon.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 40px;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #ffffff 20%, #ff6b6b 40%, #4ecdc4 60%, #45b7d1 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+            filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.3));
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            max-width: 700px;
+            margin: 0 auto 3rem auto;
+            line-height: 1.6;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+
+        .btn {
+            padding: 1.2rem 2.5rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.95);
+            color: #000000;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 60px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 30px 80px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 20px 50px rgba(255, 255, 255, 0.15);
+        }
+
+        .features {
+            padding: 8rem 0;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 30%, #ff6b6b 70%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            padding: 3rem 2.5rem;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 107, 0.8), rgba(78, 205, 196, 0.8), transparent);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-15px);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(78, 205, 196, 0.2));
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 0 auto 2rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-icon svg {
+            width: 80px;
+            height: 80px;
+            fill: rgba(255, 255, 255, 0.9);
+            stroke: rgba(255, 255, 255, 0.9);
+            stroke-width: 1.5;
+        }
+
+        .feature-card h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            line-height: 1.7;
+            text-align: center;
+        }
+
+        .screenshots {
+            padding: 8rem 0;
+            position: relative;
+        }
+
+        .gallery {
+            display: block;
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        .gallery img {
+            display: block;
+            margin: 2rem auto;
+            max-width: 50%;
+            height: auto;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .gallery img:hover {
+            transform: translateY(-8px);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            position: relative;
+            width: 85vw;
+            height: 80vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: auto;
+        }
+
+        .modal img {
+            max-width: 85vw;
+            max-height: 80vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(40px) saturate(150%);
+            -webkit-backdrop-filter: blur(40px) saturate(150%);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 4rem 0 2rem 0;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .footer-content h3 {
+            font-size: 1.5rem;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .footer-content p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 8rem 0 6rem 0;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 320px;
+                justify-content: center;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .section-title {
+                font-size: 2.2rem;
+            }
+
+            .gallery img {
+                max-width: 85%;
+            }
+
+            .feature-icon {
+                width: 100px;
+                height: 100px;
+            }
+
+            .feature-icon svg {
+                width: 70px;
+                height: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-gradient"></div>
+    
+    <header class="header">
+        <nav class="nav container">
+            <a href="#" class="logo">MIDI Expressionist</a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="./support.html">Support</a></li>
+                <li><a href="#screenshots">Gallery</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="app-showcase">
+                        <div class="app-icon"></div>
+                    </div>
+                    <h1>MIDI Expressionist</h1>
+                    <p class="hero-subtitle">Professional MIDI control specifically designed to humanize orchestral libraries. Transform your iOS device into a powerful MIDI controller with professional-grade precision and expressive capabilities.</p>
+                    <div class="cta-buttons">
+                        <a href="#" class="btn btn-primary">Download on App Store</a>
+                        <a href="./manual.pdf" class="btn btn-secondary" target="_blank">View Manual</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <div class="container">
+                <h2 class="section-title">Powerful Features</h2>
+                <p class="section-subtitle">Everything you need for professional MIDI expression control in one intuitive iOS app</p>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="390 260 60 70">
+                                <path fill="#FFFFFF" d="M408.61719,323.22852c0,2.45703-1.99219,4.44922-4.44922,4.44922h-2.22412c-2.45703,0-4.44922-1.99219-4.44922-4.44922v-51.55469c0-2.45703,1.99219-4.44922,4.44922-4.44922h2.22412c2.45703,0,4.44922,1.99219,4.44922,4.44922V323.22852z"/>
+                                <path fill="#FFFFFF" d="M427.1543,323.22852c0,2.45703-1.99121,4.44922-4.44922,4.44922h-2.22363c-2.45703,0-4.44873-1.99219-4.44873-4.44922v-30.36035c0-2.45703,1.9917-4.44873,4.44873-4.44873h2.22363c2.45801,0,4.44922,1.9917,4.44922,4.44873V323.22852z"/>
+                                <path fill="#FFFFFF" d="M445.32227,323.22852c0,2.45703-1.99219,4.44922-4.44922,4.44922h-2.22461c-2.45703,0-4.44922-1.99219-4.44922-4.44922v-45.44385c0-2.45703,1.99219-4.44922,4.44922-4.44922h2.22461c2.45703,0,4.44922,1.99219,4.44922,4.44922V323.22852z"/>
+                            </svg>
+                        </div>
+                        <h3>Programmable Controllers</h3>
+                        <p>Fully customizable sliders, buttons, and bidimensional pads for complete expressive control over your MIDI parameters. Design your perfect control surface.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="385 245 70 110">
+                                <polygon fill="#FFFFFF" points="404.63281,346.6875 436.72754,346.6875 420.68066,268.79346 "/>
+                                <circle fill="none" stroke="#FFFFFF" stroke-width="2" stroke-miterlimit="10" cx="420.68091" cy="268.79346" r="18.7937"/>
+                                <circle fill="none" stroke="#FFFFFF" stroke-width="2" stroke-miterlimit="10" cx="420.68091" cy="268.79346" r="13.97729"/>
+                                <circle fill="none" stroke="#FFFFFF" stroke-width="2" stroke-miterlimit="10" cx="420.68042" cy="268.79346" r="7.89771"/>
+                            </svg>
+                        </div>
+                        <h3>Dual Connectivity</h3>
+                        <p>Connect via USB (IDAM) for zero-latency or Wi-Fi for maximum flexibility. Seamlessly integrates with Mac and professional DAWs.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="402 270 36 58">
+                                <path fill="#FFFFFF" d="M413.84863,319.67285c-0.07812-3.02734-1.21094-6.82617-3.39844-11.39648c-0.33203-0.72168-0.58594-1.25977-0.76172-1.61133c-0.80078-1.75781-1.33789-3.15332-1.61133-4.18945c-0.27344-1.03516-0.41016-2.04004-0.41016-3.01758c0-2.32422,0.32715-5.21973,0.98145-8.68652s1.54785-6.85059,2.68066-10.15137c0.89844-2.61719,1.74316-4.57031,2.53418-5.85938s1.51855-1.93359,2.18262-1.93359c0.58594,0,1.04004,0.4209,1.3623,1.25977c0.32227,0.83984,0.5127,2.08008,0.57129,3.7207v0.11719c0,1.34766-0.22949,3.18359-0.68848,5.50781c-0.45898,2.3252-0.68848,3.96582-0.68848,4.92188c0,0.29297,0.00488,0.52734,0.01465,0.70312s0.02441,0.3418,0.04395,0.49805c0.64453-0.89746,1.25977-1.5625,1.8457-1.99219c0.58594-0.42871,1.17188-0.64453,1.75781-0.64453c0.68359,0,1.30859,0.27832,1.875,0.83496s1.01562,1.3623,1.34766,2.41699c0.52734-0.42871,0.99121-0.7373,1.3916-0.92285s0.77637-0.27832,1.12793-0.27832c0.68359,0,1.25488,0.21973,1.71387,0.65918s0.78613,1.08887,0.98145,1.94824c0.33203-0.03906,0.61523-0.07324,0.84961-0.10254s0.43945-0.04395,0.61523-0.04395c0.52734,0,1.00586,0.12793,1.43555,0.38086c0.42969,0.25391,0.75195,0.60547,0.9668,1.05469c0.52734,1.13281,0.98633,2.70605,1.37695,4.7168c0.39062,2.01172,0.58594,3.93652,0.58594,5.77148c0,2.07031-0.55664,4.16504-1.66992,6.28418s-1.68945,3.25684-1.72852,3.41309c-0.21484,0.68457-0.38086,1.78711-0.49805,3.31055s-0.27344,2.68555-0.46875,3.48633c-1.01562,0.80176-2.11914,1.37207-3.31055,1.71387s-2.71484,0.5127-4.57031,0.5127c-1.67969,0-3.20801-0.19434-4.58496-0.58594C416.32422,321.09863,415.04004,320.49316,413.84863,319.67285z"/>
+                            </svg>
+                        </div>
+                        <h3>Relative Cursor Mode</h3>
+                        <p>Avoid unwanted jumps with relative mode, perfect for live performances without needing to look at the screen. Professional-grade precision.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="370 260 75 65">
+                                <polyline fill="none" stroke="#FFFFFF" stroke-width="3" stroke-miterlimit="10" points="380.66699,272 380.66699,322 430.12891,322"/>
+                                <path fill="none" stroke="#FFFFFF" stroke-width="2" stroke-miterlimit="10" d="M387.09424,278.22217c0,0,1.84521,37.55518,38.85107,37.55518"/>
+                            </svg>
+                        </div>
+                        <h3>Unique Decay System</h3>
+                        <p>Exclusive automatic return-to-rest functionality, ideal for expressive controls like modulation and dynamics. Spring-loaded behavior.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="385 280 70 40">
+                                <path fill="none" stroke="#FFFFFF" stroke-width="4" stroke-miterlimit="10" d="M405.29688,304.49219c0,1.60938-1.3042,2.91309-2.91357,2.91309h-9.46973c-1.60889,0-2.91357-1.30371-2.91357-2.91309v-24.08252c0-1.60889,1.30469-2.91357,2.91357-2.91357h9.46973c1.60938,0,2.91357,1.30469,2.91357,2.91357V304.49219z"/>
+                                <path fill="none" stroke="#FFFFFF" stroke-width="4" stroke-miterlimit="10" d="M448.14746,295.21094c1.6084,0,2.91309,1.30469,2.91309,2.91357v9.46924c0,1.60938-1.30469,2.91406-2.91309,2.91406h-24.08203c-1.60938,0-2.91406-1.30469-2.91406-2.91406v-9.46924c0-1.60889,1.30469-2.91357,2.91406-2.91357H448.14746z"/>
+                                <path fill="none" stroke="#FFFFFF" stroke-width="4" stroke-miterlimit="10" d="M435.44922,313.55859c0,2.125-1.71289,3.84766-3.82617,3.84766h-31.2417c-2.11279,0-3.8252-1.72266-3.8252-3.84766v-25.28662c0-2.12402,1.7124-3.84619,3.8252-3.84619h31.2417c2.11328,0,3.82617,1.72217,3.82617,3.84619V313.55859z"/>
+                            </svg>
+                        </div>
+                        <h3>Adaptive Interface</h3>
+                        <p>Automatically adapts to any iOS screen size, from iPhone to iPad, in any orientation. Optimal ergonomics for every device.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="390 255 60 90">
+                                <path fill="none" stroke="#FFFFFF" stroke-width="3" stroke-miterlimit="10" d="M431.4502,267.12451C430.28125,265.95605,427.97363,265,426.32031,265h-27.47363c-1.65234,0-3.00439,1.35205-3.00439,3.00439v58.72217c0,1.65234,1.35205,3.00391,3.00439,3.00391h44.4082c1.65234,0,3.00488-1.35156,3.00488-3.00391v-41.78809c0-1.65234-0.95703-3.96045-2.125-5.12891L431.4502,267.12451z"/>
+                                <line fill="none" stroke="#FFFFFF" stroke-width="3" stroke-miterlimit="10" x1="401.90869" y1="279.21533" x2="430.54492" y2="279.21533"/>
+                                <line fill="none" stroke="#FFFFFF" stroke-width="3" stroke-miterlimit="10" x1="401.90869" y1="289.11572" x2="439.38184" y2="289.11572"/>
+                                <line fill="none" stroke="#FFFFFF" stroke-width="3" stroke-miterlimit="10" x1="401.90869" y1="308.91602" x2="439.38184" y2="308.91602"/>
+                                <line fill="none" stroke="#FFFFFF" stroke-width="3" stroke-miterlimit="10" x1="401.90869" y1="299.01562" x2="430.54492" y2="299.01562"/>
+                                <line fill="none" stroke="#FFFFFF" stroke-width="3" stroke-miterlimit="10" x1="401.90869" y1="318.81641" x2="430.54492" y2="318.81641"/>
+                            </svg>
+                        </div>
+                        <h3>Custom Presets</h3>
+                        <p>Save and manage configurations for different musical projects and instrument libraries. Your setups, your way.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="screenshots" class="screenshots">
+            <div class="container">
+                <h2 class="section-title">Intuitive Design</h2>
+                <p class="section-subtitle">Clean, professional interface designed for musicians by musicians</p>
+                
+                <div class="gallery">
+                    <img src="./01 iphone.jpeg" alt="MIDI Expressionist Interface" onclick="openModal(this.src, this.alt)">
+                    <img src="./02 ipad.jpeg" alt="MIDI Expressionist Interface" onclick="openModal(this.src, this.alt)">  
+                    <img src="./03 iphone.jpeg" alt="MIDI Expressionist Interface" onclick="openModal(this.src, this.alt)">
+                    <img src="./04 ipad.jpeg" alt="MIDI Expressionist Interface" onclick="openModal(this.src, this.alt)">
+                    <img src="./05 edit.jpeg" alt="MIDI Expressionist Interface" onclick="openModal(this.src, this.alt)">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Viewer -->
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeModal()">Close</button>
+            <img id="modalImage" src="" alt="">
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <h3>MIDI Expressionist</h3>
+                <p>Professional MIDI control for the modern composer.<br>Designed and developed for iOS with precision and care.</p>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 MIDI Expressionist. All rights reserved. Built with passion for music technology.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function openModal(src, alt) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            
+            modalImage.src = src;
+            modalImage.alt = alt;
+            modal.classList.add('active');
+            
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('active');
+            
+            document.body.style.overflow = 'auto';
+        }
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
