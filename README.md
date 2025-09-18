@@ -28,7 +28,7 @@ MIDI Expressionist is a professional MIDI control application designed specifica
 
 ## Live Website
 
-Visit the live site at: `https://midi-expressionist.github.io/midi-expressionist-landing`
+Visit the live site at: `https://midi-expressionist.github.io/webpage/`
 
 ## Technical Details
 
